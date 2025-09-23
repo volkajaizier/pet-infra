@@ -1,0 +1,86 @@
+loki:
+  config: |
+    auth_enabled: false
+
+    server:
+      http_listen_port: 3100
+
+    memberlist:
+      join_members:
+        - {{ include "loki.fullname" . }}-memberlist
+
+    common:
+      replication_factor: 1
+
+    schema_config:
+      configs:
+        - from: 2021-01-01
+          store: boltdb-shipper
+          object_store: aws
+          schema: v13
+          index:
+            prefix: loki_index_
+            period: 24h
+
+    ingester:
+      wal:
+        enabled: true
+        dir: /var/loki/wal
+
+    storage_config:
+      aws:
+        s3: s3://s3.{{ .Values.loki.storage.s3.region }}.amazonaws.com/{{ .Values.loki.storage.bucketNames.chunks }}
+        s3forcepathstyle: true
+        bucketnames: {{ .Values.loki.storage.bucketNames.chunks }}
+        region: {{ .Values.loki.storage.s3.region }}
+      boltdb_shipper:
+        shared_store: s3
+        active_index_directory: /var/loki/index
+        cache_location: /var/loki/boltdb-cache
+
+    compactor:
+      working_directory: /var/loki/compactor
+      shared_store: s3
+
+    ruler:
+      storage:
+        type: s3
+        s3:
+          bucketnames: {{ .Values.loki.storage.bucketNames.ruler }}
+          region: {{ .Values.loki.storage.s3.region }}
+      ring:
+        kvstore:
+          store: memberlist
+      rule_path: /tmp/loki/rules
+      enable_api: true
+
+  storage:
+    type: s3
+    s3:
+      region: "${region}"
+      s3ForcePathStyle: true
+      endpoint: "https://s3.${region}.amazonaws.com"
+    bucketNames:
+      chunks: "${bucket_chunks}"
+      ruler: "${bucket_ruler}"
+      admin: "${bucket_admin}"
+
+backend:
+  replicas: 1
+  persistence:
+    storageClass: "${storage_class}"
+
+write:
+  replicas: 1
+  persistence:
+    storageClass: "${storage_class}"
+
+read:
+  replicas: 1
+  persistence:
+    storageClass: "${storage_class}"
+
+# Використовуємо вже створений ззовні ServiceAccount (IRSA)
+serviceAccount:
+  create: false
+  name: loki
