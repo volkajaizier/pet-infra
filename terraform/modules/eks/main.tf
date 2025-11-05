@@ -2,10 +2,6 @@ terraform {
   required_version = ">= 1.6"
 }
 
-provider "aws" {
-  region = var.region
-}
-
 # EKS cluster
 
 resource "aws_eks_cluster" "this" {

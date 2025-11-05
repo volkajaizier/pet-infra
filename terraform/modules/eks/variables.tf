@@ -19,11 +19,11 @@ variable "desired_size" {
 }
 variable "min_size" {
   type    = number
-  default = 2
+  default = 1
 }
 variable "max_size" {
   type    = number
-  default = 2
+  default = 3
 }
 variable "instance_type" {
   type    = string

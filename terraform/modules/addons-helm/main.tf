@@ -47,7 +47,7 @@ resource "helm_release" "external_dns" {
       {
         serviceAccount = {
           create = false
-          name   = "external-dns" 
+          name   = "external-dns"
         }
 
         sources = ["service", "ingress"]

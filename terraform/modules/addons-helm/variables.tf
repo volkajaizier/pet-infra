@@ -50,7 +50,7 @@ variable "monitoring_ns" {
 variable "loki_chart_version" {
   description = "Grafana Loki chart version (pin for reproducibility)"
   type        = string
-  default     = "5.39.0" 
+  default     = "5.39.0"
 }
 
 variable "loki_values_yaml" {

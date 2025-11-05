@@ -20,4 +20,4 @@ variable "ebs_csi_version" {
   type    = string
   default = null
 }
-variable "ebs_csi_irsa_role_arn" {  type = string } 
+variable "ebs_csi_irsa_role_arn" { type = string } 
